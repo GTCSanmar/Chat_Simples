@@ -5,13 +5,11 @@ import sys
 import os
 import time
 
-# Configurações do Multicast
 MULTICAST_GROUP = '224.1.1.1'
 PORT = 5007
 TTL = 1 
 BUFFER_SIZE = 1024
 
-# Variável global para armazenar o nickname.
 NICKNAME = "Usuário Desconhecido" 
 
 
@@ -24,7 +22,6 @@ def receive_messages():
     receiver_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     
     try:
-        # Vincula o socket à porta e se junta ao grupo Multicast
         receiver_socket.bind(('', PORT))
     except socket.error as e:
         print(f"Erro ao vincular a porta: {e}")
@@ -65,13 +62,11 @@ def send_messages(sender_socket):
 
     while True:
         try:
-            # O input usa o NICKNAME já definido
             message = input(f"{NICKNAME}> ")
             
             if message.lower() in ('quit', 'sair'):
                 break
             
-            # Formata a mensagem com o nickname escolhido
             full_message = f"{NICKNAME}: {message}"
             
             sender_socket.sendto(full_message.encode('utf-8'), multicast_address)
@@ -89,10 +84,8 @@ def main_chat_client():
     global NICKNAME 
     
     # --- 1. Pede o nickname ao usuário ---
-    # Sugere o nome do sistema como padrão
     default_nickname = os.environ.get('USER') or os.environ.get('USERNAME') or 'Usuario'
     
-    # ESTE INPUT É O PRIMEIRO COMANDO EXECUTADO
     chosen_nickname = input(f"Digite seu nome de usuário (padrão: {default_nickname}): ").strip()
     
     if chosen_nickname:
@@ -113,13 +106,12 @@ def main_chat_client():
     
     time.sleep(0.5) 
 
-    # 4. Inicia o loop de ENVIO
     send_messages(sender_socket)
     
-    # 5. Encerramento
     print("\nEncerrando o chat...")
     sender_socket.close()
     os._exit(0)
 
 if __name__ == "__main__":
+
     main_chat_client()
